@@ -21,9 +21,12 @@
 // All rights reserved.  See copyright.h for copyright notice and limitation 
 // of liability and disclaimer of warranty provisions.
 
+#include <printf.h>
 #include "copyright.h" //
 #include "system.h" //
 #include "syscall.h" //
+#include "../threads/system.h"
+#include "../machine/machine.h"
 //
 
 //----------------------------------------------------------------------
@@ -50,6 +53,10 @@
 //----------------------------------------------------------------------
 // Exception handlers defined here
 void Exit_call(int status) {
+    printf("Time to end this existence. With Exit code %d", status);
+    currentThread->Finish();
+}
+void Join_call(int status) {
     printf("Time to end this existence. With Exit code %d", status);
     currentThread->Finish();
 }

@@ -21,9 +21,10 @@
 // All rights reserved.  See copyright.h for copyright notice and limitation 
 // of liability and disclaimer of warranty provisions.
 
-#include "copyright.h"
-#include "system.h"
-#include "syscall.h"
+#include "copyright.h" //
+#include "system.h" //
+#include "syscall.h" //
+//
 
 //----------------------------------------------------------------------
 // ExceptionHandler
@@ -47,17 +48,53 @@
 //	"which" is the kind of exception.  The list of possible exceptions 
 //	are in machine.h.
 //----------------------------------------------------------------------
+// Exception handlers defined here
+void Exit_call(int status) {
+    printf("Time to end this existence. With Exit code %d", status);
+    currentThread->Finish();
+}
+
+
+//----------------------------------------------------------------------
 
 void
 ExceptionHandler(ExceptionType which)
 {
     int type = machine->ReadRegister(2);
 
-    if ((which == SyscallException) && (type == SC_Halt)) {
-	DEBUG('a', "Shutdown, initiated by user program.\n");
-   	interrupt->Halt();
+    if  (which == SyscallException) {
+        switch (type) {
+            case SC_Halt:
+                DEBUG('a', "Shutdown, initiated by user program.\n");
+                interrupt->Halt();
+                break;
+            case SC_Exit:
+                Exit_call(machine->ReadRegister(4));
+                break;
+            case SC_Exec:
+                break;
+            case SC_Join:
+                break;
+            case SC_Create:
+                break;
+            case SC_Open:
+                break;
+            case SC_Read:
+                break;
+            case SC_Write:
+                break;
+            case SC_Close:
+                break;
+            case SC_Fork:
+                break;
+            case SC_Yield:
+                break;
+            default:
+                printf("g");
+
+        }
     } else {
-	printf("Unexpected user mode exception %d %d\n", which, type);
-	ASSERT(FALSE);
+        printf("Unexpected user mode exception %d %d\n", which, type);
+        ASSERT(FALSE);
     }
 }
